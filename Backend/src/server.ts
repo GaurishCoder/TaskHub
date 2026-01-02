@@ -13,12 +13,9 @@ app.use(express.json());
 app.use('/api/tasks', taskRouter);
 
 
-app.get("/home",(req,res)=>{
-    res.send("<h1>this is home page</h1>")
-})
 
 app.get("/",(req,res)=>{
-    res.send("welcome to backend")
+    res.send("<h1> Welcome to TaskHub Backend </h1> ")
 })
 
 app.listen(PORT,()=>{
