@@ -4,8 +4,8 @@ export interface ITask extends Document {
   title: string;
   description: string;
   status: "active" | "completed";
-  userId: Types.ObjectId;
-  createdAt: string;
+  // userId: Types.ObjectId;
+  createdAt?: string;
 }
 
 const taskSchema = new Schema<ITask>({
@@ -16,7 +16,7 @@ const taskSchema = new Schema<ITask>({
   },
   description: {
     type: String,
-    required: true,
+    // required: true,
     trim: true,
   },
   status: {
@@ -24,11 +24,11 @@ const taskSchema = new Schema<ITask>({
     enum: ["active", "completed"],
     default: "active",
   },
-  userId: {
-    type: Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
-  },
+  // userId: {
+  //   type: Schema.Types.ObjectId,
+  //   ref: "User",
+  //   required: true,
+  // },
   createdAt: { type: String, default: new Date().toLocaleDateString() },
 });
 
