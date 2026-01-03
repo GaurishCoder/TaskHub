@@ -1,15 +1,19 @@
 import { Request, Response } from "express";
 import Task, { ITask } from "../models/task.model";
 
-const getAllTasks = async (req: Request, res: Response) => {
+interface AuthRequest extends Request {
+  user?: any;
+}
+
+const getAllTasks = async (req: AuthRequest, res: Response) => {
   try {
     if (!req.user) {
       return res.status(401).json({ message: "Unauthorized" });
     }
+    
+    const userId = req.user.userId;
 
-    const userId = req.user._id;
-
-    const tasks = await Task.find({ user: userId });
+    const tasks = await Task.find({ userId: userId });
 
     res.status(200).json(tasks);
   } catch (error) {
@@ -21,14 +25,11 @@ const getAllTasks = async (req: Request, res: Response) => {
 };
 
 
-interface AuthRequest extends Request {
-  user?: any;
-}
 
 const createTask = async (req: AuthRequest, res: Response) => {
   try {
     const task: ITask = req.body;
-    task.userId = req.user.userId ;
+    task.userId = req.user.userId;
     const data = await Task.create(task);
 
     res.status(201).json({
@@ -50,7 +51,7 @@ const updateTask = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "Undefined Data" });
     }
     const taskId = req.params.id;
-    
+
     const data = await Task.findByIdAndUpdate(taskId, taskData, {
       new: true,
       runValidators: true,
@@ -66,12 +67,11 @@ const updateTask = async (req: Request, res: Response) => {
 };
 const deleteTask = async (req: Request, res: Response) => {
   try {
-    
     const taskId = req.params.id;
-    
+
     await Task.findByIdAndDelete(taskId);
 
-    res.status(200).json({ message: "Deleted Successfully"});
+    res.status(200).json({ message: "Deleted Successfully" });
   } catch (error) {
     res.status(400).json({
       message: "Failed to update task",
@@ -80,11 +80,9 @@ const deleteTask = async (req: Request, res: Response) => {
   }
 };
 
-
-
 export default {
   getAllTasks,
   createTask,
   updateTask,
-  deleteTask
+  deleteTask,
 };
