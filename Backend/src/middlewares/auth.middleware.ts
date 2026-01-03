@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwt, { Secret } from "jsonwebtoken";
-const JWT_SECRET: Secret = process.env.JWT || "default_secret";
+const JWT_SECRET: Secret = process.env.JWT_SECRET || "default_secret";
 
 interface AuthRequest extends Request {
   user?: any;

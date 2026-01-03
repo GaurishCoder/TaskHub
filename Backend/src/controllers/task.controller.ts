@@ -20,10 +20,15 @@ const getAllTasks = async (req: Request, res: Response) => {
   }
 };
 
-const createTask = async (req: Request, res: Response) => {
+
+interface AuthRequest extends Request {
+  user?: any;
+}
+
+const createTask = async (req: AuthRequest, res: Response) => {
   try {
     const task: ITask = req.body;
-
+    task.userId = req.user.userId ;
     const data = await Task.create(task);
 
     res.status(201).json({

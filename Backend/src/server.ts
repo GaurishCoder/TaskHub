@@ -1,23 +1,31 @@
-import express from "express";
-import connectDB from "./config/db";
-import dotenv from 'dotenv';
-import taskRouter from "./routes/task.route";
-const app = express();
-const PORT = process.env.PORT ||  3000;
+import express, { Request, Response } from "express";
+import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
 
-dotenv.config();
+import connectDB from "./config/db";
+import taskRouter from "./routes/task.route";
+import userRouter from "./routes/user.route";
+
+dotenv.config(); // ✅ FIRST
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
 connectDB();
 
-app.use(express.urlencoded({extended:true}));
 app.use(express.json());
-app.use('/api/tasks', taskRouter);
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 
 
-app.get("/",(req,res)=>{
-    res.send("<h1> Welcome to TaskHub Backend </h1> ")
-})
+app.use("/api/tasks", taskRouter);
+app.use("/api/auth", userRouter);
 
-app.listen(PORT,()=>{
-    console.log(`Server is listing at ${PORT} on http://localhost:${PORT}`);
-})
+app.get("/", (_req: Request, res: Response) => {
+  res.send("<h1> Welcome to TaskHub Backend </h1>");
+});
+
+app.listen(PORT, () => {
+  console.log(`Server is running at http://localhost:${PORT}`);
+});
