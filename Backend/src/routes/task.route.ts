@@ -4,7 +4,10 @@ const router = express.Router();
 import taskController from "../controllers/task.controller";
 import { authMiddleware } from "../middlewares/auth.middleware";
 
-router.get("/",authMiddleware, taskController.getAllTasks);
+
+router.get("/print",taskController.printData)
+
+router.get("/", taskController.getAllTasks);
 
 router.post("/",authMiddleware, taskController.createTask);
 

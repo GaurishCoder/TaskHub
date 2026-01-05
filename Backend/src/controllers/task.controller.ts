@@ -13,7 +13,7 @@ const getAllTasks = async (req: AuthRequest, res: Response) => {
     
     const userId = req.user.userId;
 
-    const tasks = await Task.find({ userId: userId });
+    const tasks = await Task.find({userId});
 
     res.status(200).json(tasks);
   } catch (error) {
@@ -24,6 +24,15 @@ const getAllTasks = async (req: AuthRequest, res: Response) => {
   }
 };
 
+
+
+const printData = async (req: AuthRequest, res: Response) => {
+ try {
+  res.status(200).json({message:"req done"})
+ } catch (error) {
+  console.log(error);
+ }
+};
 
 
 const createTask = async (req: AuthRequest, res: Response) => {
@@ -84,5 +93,6 @@ export default {
   getAllTasks,
   createTask,
   updateTask,
+  printData,
   deleteTask,
 };

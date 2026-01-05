@@ -39,7 +39,7 @@ function TaskContextProvider({ children }: TaskProviderProps) {
         `${BACKEND_URL}/tasks`,
         { withCredentials: true }
       );
-
+      console.log(response)
       setTask(response.data.tasks);
     } catch (error) {
       console.error("Failed to fetch tasks", error);
@@ -47,8 +47,9 @@ function TaskContextProvider({ children }: TaskProviderProps) {
       setLoading(false);
     }
   }
-
+  
   useEffect(() => {
+    
     fetchData();
   }, []);
 
