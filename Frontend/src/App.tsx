@@ -1,20 +1,26 @@
-import { useContext } from "react";
-import { TaskContext } from "./context/TaskContext";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import Login from "./components/Login";
+import Register from "./components/Register";
+import TaskList from "./components/TaskList";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
-  const taskContext = useContext(TaskContext);
-
-  if (!taskContext) {
-    throw new Error("App must be used within TaskContextProvider");
-  }
-
-  const { task} = taskContext ;
-
   return (
-    <>
-      <div className="text-center text-4xl font-bold">App</div>
-      {/* <p>Total Tasks: {task.length}</p> */}
-    </>
+    <Router>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route
+          path="/tasks"
+          element={
+            <ProtectedRoute>
+              <TaskList />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/" element={<Navigate to="/tasks" replace />} />
+      </Routes>
+    </Router>
   );
 }
 
