@@ -7,7 +7,7 @@ import { authMiddleware } from "../middlewares/auth.middleware";
 
 router.get("/print",taskController.printData)
 
-router.get("/", taskController.getAllTasks);
+router.get("/", authMiddleware, taskController.getAllTasks);
 
 router.post("/",authMiddleware, taskController.createTask);
 

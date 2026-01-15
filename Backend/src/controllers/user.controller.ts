@@ -1,6 +1,9 @@
 import { Request, Response } from "express";
+import jwt, { Secret } from "jsonwebtoken";
 import User from "../models/user.model";
 import { generateToken } from "../utils/jwt";
+
+const JWT_SECRET: Secret = process.env.JWT_SECRET || "default_secret";
 
 interface RegisterBody {
   username: string;
@@ -95,4 +98,62 @@ const loginUser = async (req: Request, res: Response) => {
   }
 };
 
-export default { registerUser, loginUser };
+const verifyToken = async (req: Request, res: Response) => {
+  try {
+    const token = req.cookies?.token;
+    
+    if (!token) {
+      return res.status(200).json({
+        message: "Token not present",
+        authenticated: false,
+        tokenPresent: false,
+      });
+    }
+
+    // Verify the token
+    try {
+      const decoded = jwt.verify(token, JWT_SECRET) as { userId: string; email: string };
+      
+      return res.status(200).json({
+        message: "Token is valid",
+        authenticated: true,
+        tokenPresent: true,
+        userData: decoded,
+      });
+    } catch (error) {
+      return res.status(200).json({
+        message: "Token is invalid or expired",
+        authenticated: false,
+        tokenPresent: true,
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      message: "Internal server error",
+      error: (error as Error).message,
+    });
+  }
+};
+
+const logoutUser = async (req: Request, res: Response) => {
+  try {
+    // Clear the token cookie
+    res.cookie("token", "", {
+      maxAge: 0,
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+    });
+
+    return res.status(200).json({
+      message: "User logged out successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Internal server error",
+      error: (error as Error).message,
+    });
+  }
+};
+
+export default { registerUser, loginUser, verifyToken, logoutUser };
